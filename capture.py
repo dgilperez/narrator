@@ -2,6 +2,9 @@ import cv2
 import time
 from PIL import Image
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 # Folder
 folder = "frames"

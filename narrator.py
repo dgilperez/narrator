@@ -6,9 +6,11 @@ import time
 import simpleaudio as sa
 import errno
 from elevenlabs import generate, play, voices
+from dotenv import load_dotenv
+
+load_dotenv()  # take environment variables from .env.
 
 client = OpenAI()
-
 
 def encode_image(image_path):
     while True:
@@ -24,7 +26,7 @@ def encode_image(image_path):
 
 
 def play_audio(text):
-    audio = generate(text=text, voice="ENfvYmv6CRqDodDZTieQ", model="eleven_turbo_v2")
+    audio = generate(text=text, voice=os.environ.get("VOICE_ID"), model="eleven_turbo_v2")
 
     unique_id = base64.urlsafe_b64encode(os.urandom(30)).decode("utf-8").rstrip("=")
     dir_path = os.path.join("narration", unique_id)
@@ -60,7 +62,7 @@ def analyze_image(base64_image, script):
                 "role": "system",
                 "content": """
                 You are Sir David Attenborough. Narrate the picture of the human as if it is a nature documentary.
-                Make it snarky and funny. Don't repeat yourself. Make it short. If I do anything remotely interesting, make a big deal about it!
+                Make it snarky and funny. Don't repeat yourself. If I do anything remotely interesting, make a big deal about it! Make it very short, only one sentence. Never say sorry or that you can't comply - just say nothing in that case.
                 """,
             },
         ]
@@ -94,7 +96,7 @@ def main():
         script = script + [{"role": "assistant", "content": analysis}]
 
         # wait for 5 seconds
-        time.sleep(5)
+        time.sleep(7)
 
 
 if __name__ == "__main__":
